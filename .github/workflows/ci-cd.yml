@@ -122,7 +122,7 @@ jobs:
             ELASTIC_BEANSTALK_APP_NAME: "bish-bash-bosh-task-listing-app"
             ELASTIC_BEANSTALK_ENV_NAME: "bi-ba-bo-task-list-app-env"
             S3_DEPLOY_BUCKET: "bish-bash-bucket"
-          run: |
+        run: |
             echo "Deploying new application version: $APP_VERSION"
             echo "Creating application version:"
             aws elasticbeanstalk create-application-version \
