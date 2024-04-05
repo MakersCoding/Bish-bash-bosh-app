@@ -82,7 +82,7 @@ jobs:
     needs: push
     env:
       CONTAINER_REGISTRY_URL: "https://eu-west-2.console.aws.amazon.com/ecr/repositories/private/664047078509/bish-bash-bosh-repo?region=eu-west-2"
-      CONTAINER_REPOSITORY_NAME: "bish-bash-bosh-repo"
+      CONTAINER_REPOSITORY_NAME: "bish-bash-bosh-repo2"
       S3_DEPLOY_BUCKET: "bish-bash-bucket"
       ELASTIC_BEANSTALK_APP_NAME: "bish-bash-bosh-task-listing-app"
       ELASTIC_BEANSTALK_ENV_NAME: "bi-ba-bo-task-list-app-env"
@@ -112,18 +112,17 @@ jobs:
         run: |
           echo "Copying Dockerrun.aws.json to S3"
           aws s3 cp "./aws/Dockerrun.aws.json" "s3://$S3_DEPLOY_BUCKET" --region eu-west-2
+    
+      - name: Get version from package.json
+        run: |
+          echo "::set-env name=APP_VERSION::$(node -pe \"require('./package.json').version\")"
 
-          - name: Get version from package.json
-        run: echo "::set-env name=APP_VERSION::$(node -pe \"require('./package.json').version\")"
       - name: Deploy new application version to Elastic Beanstalk
         env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            ELASTIC_BEANSTALK_APP_NAME: "bish-bash-bosh-task-listing-app"
-            ELASTIC_BEANSTALK_ENV_NAME: "bi-ba-bo-task-list-app-env"
-            S3_DEPLOY_BUCKET: "bish-bash-bucket"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}        
         run: |
-            echo "Deploying new application version: $APP_VERSION"
+            echo "Deploying new application version"
             echo "Creating application version:"
             aws elasticbeanstalk create-application-version \
               --application-name "$ELASTIC_BEANSTALK_APP_NAME" \
@@ -140,4 +139,3 @@ jobs:
               --region eu-west-2 \
               --debug
         shell: /usr/bin/bash -e {0}
-        
