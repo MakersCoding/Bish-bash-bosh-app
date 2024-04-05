@@ -139,5 +139,5 @@ jobs:
               --version-label "$APP_VERSION" \
               --region eu-west-2 \
               --debug
-          shell: /usr/bin/bash -e {0}
+        shell: /usr/bin/bash -e {0}
         
